@@ -144,12 +144,6 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
     # Получаем выбранную строку
     selected_rows = grid_response.get('selected_rows', [])
     
-    # Информация о количестве отфильтрованных результатов
-    if len(controls) != len(all_controls):
-        st.info(f"🔍 Показано {len(df)} из {len(all_controls)} контролей (применены фильтры)")
-    else:
-        st.info(f"📋 Всего контролей: {len(df)}")
-    
     # Обработка выбранной строки из AgGrid
     if selected_rows is not None:
         # selected_rows может быть DataFrame или списком словарей
