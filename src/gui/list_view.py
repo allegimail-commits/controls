@@ -35,6 +35,10 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
     # Добавляем CSS для выравнивания высоты кнопок с высотой строки поиска
     st.markdown("""
         <style>
+        div[data-testid="column"] {
+            display: flex;
+            align-items: center;
+        }
         .stButton > button {
             height: 38px;
         }

@@ -44,48 +44,7 @@ def render_control_details(controls: List[Control], selected_control_id: Optiona
     # Находим индекс текущего контроля
     current_index = next((i for i, c in enumerate(controls) if c.identifier == control.identifier), 0)
     
-    # Навигация между контролями
-    col1, col2, col3 = st.columns([1, 2, 1])
-    
-    with col1:
-        if st.button("◀️ Предыдущий", disabled=current_index == 0):
-            if current_index > 0:
-                prev_control = controls[current_index - 1]
-                st.session_state.selected_control_id = f"{prev_control.identifier}_{current_index - 1}"
-                st.rerun()
-    
-    with col2:
-        st.write(f"**Контроль {current_index + 1} из {len(controls)}**")
-    
-    with col3:
-        if st.button("Следующий ▶️", disabled=current_index >= len(controls) - 1):
-            if current_index < len(controls) - 1:
-                next_control = controls[current_index + 1]
-                st.session_state.selected_control_id = f"{next_control.identifier}_{current_index + 1}"
-                st.rerun()
-    
-    st.divider()
-    
-    # Основная информация
-    st.subheader("Основная информация")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.text_input("Идентификатор", value=control.identifier or '', disabled=True, key='detail_identifier')
-        st.text_input("Наименование", value=control.name or '', disabled=True, key='detail_name')
-        st.text_input("КодТаблицы", value=control.table_code or '', disabled=True, key='detail_table_code')
-        st.text_input("Таксономия", value=control.taxonomy or '', disabled=True, key='detail_taxonomy')
-        st.text_input("Рынок", value=control.market or '', disabled=True, key='detail_market')
-    
-    with col2:
-        st.text_input("Обязательный", value=control.required or '', disabled=True, key='detail_required')
-        st.text_input("ДоступноИсправление", value=control.correction_available or '', disabled=True, key='detail_correction')
-        st.text_input("Утверждение", value=control.approval or '', disabled=True, key='detail_approval')
-        st.text_input("КодУтвержденияЦБ", value=control.cbr_approval_code or '', disabled=True, key='detail_cbr_approval')
-        st.text_input("НаОснованииТребованияЦБ", value=control.based_on_cbr_requirement or '', disabled=True, key='detail_cbr_req')
-    
-    # URI
+    # URI (вынесено до основной информации)
     st.subheader("URI")
     uri_list = control.get_uri_list()
     if uri_list:
@@ -105,10 +64,31 @@ def render_control_details(controls: List[Control], selected_control_id: Optiona
         st.subheader("Сверочный URI")
         st.text(control.verification_uri)
     
+    st.divider()
+    
+    # Основная информация
+    st.markdown("### <span style='color: black; font-weight: bold;'>Основная информация</span>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.text_input("Идентификатор", value=control.identifier or '', disabled=True, key='detail_identifier')
+        st.text_input("Наименование", value=control.name or '', disabled=True, key='detail_name')
+        st.text_input("КодТаблицы", value=control.table_code or '', disabled=True, key='detail_table_code')
+        st.text_input("Таксономия", value=control.taxonomy or '', disabled=True, key='detail_taxonomy')
+        st.text_input("Рынок", value=control.market or '', disabled=True, key='detail_market')
+    
+    with col2:
+        st.text_input("Обязательный", value=control.required or '', disabled=True, key='detail_required')
+        st.text_input("ДоступноИсправление", value=control.correction_available or '', disabled=True, key='detail_correction')
+        st.text_input("Утверждение", value=control.approval or '', disabled=True, key='detail_approval')
+        st.text_input("КодУтвержденияЦБ", value=control.cbr_approval_code or '', disabled=True, key='detail_cbr_approval')
+        st.text_input("НаОснованииТребованияЦБ", value=control.based_on_cbr_requirement or '', disabled=True, key='detail_cbr_req')
+    
     # Описание
     if control.description:
-        st.subheader("Описание")
-        st.text_area("", value=control.description, disabled=True, height=100, key='detail_description')
+        st.markdown("### <span style='color: black; font-weight: bold;'>Описание</span>", unsafe_allow_html=True)
+        st.text_area("", value=control.description, disabled=True, height=300, key='detail_description')
     
     # Описание проверки по данным ЦБ
     if control.cbr_check_description:
@@ -117,7 +97,7 @@ def render_control_details(controls: List[Control], selected_control_id: Optiona
     
     # Комментарий
     if control.comment:
-        st.subheader("Комментарий")
+        st.markdown("### <span style='color: black; font-weight: bold;'>Комментарий</span>", unsafe_allow_html=True)
         st.text_area("", value=control.comment, disabled=True, height=100, key='detail_comment')
     
     # Алгоритм (скрыто для будущего использования)
