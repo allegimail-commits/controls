@@ -31,10 +31,12 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
     # Применяем фильтры
     controls = filter_state.apply_filters(all_controls)
     
-    # Кнопка сброса фильтров (перед виджетами, чтобы можно было сбросить их значения)
-    col_btn1, col_btn2 = st.columns([10, 1])
-    with col_btn2:
-        if st.button("🔄 Сбросить фильтры", use_container_width=True, key='reset_aggrid_filters'):
+    # Быстрый поиск и кнопка сброса фильтров в одной строке
+    col_search, col_btn = st.columns([10, 1])
+    with col_search:
+        search_term = st.text_input("🔍 Быстрый поиск по таблице", key="quick_search")
+    with col_btn:
+        if st.button("🔄 Сбросить настройки таблицы", use_container_width=True, key='reset_aggrid_filters'):
             # Сбрасываем фильтры FilterState
             filter_state.reset_filters()
             # Удаляем ключ быстрого поиска из session_state (будет пересоздан с пустым значением)
@@ -45,9 +47,6 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
                 st.session_state.aggrid_reset_counter = 0
             st.session_state.aggrid_reset_counter += 1
             st.rerun()
-    
-    # Быстрый поиск
-    search_term = st.text_input("🔍 Быстрый поиск по таблице", key="quick_search")
     
     # Подготавливаем данные для таблицы
     table_data = []

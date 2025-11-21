@@ -120,11 +120,11 @@ def render_control_details(controls: List[Control], selected_control_id: Optiona
         st.subheader("Комментарий")
         st.text_area("", value=control.comment, disabled=True, height=100, key='detail_comment')
     
-    # Алгоритм
-    if control.algorithm:
-        st.subheader("Алгоритм")
-        # Используем code блок для подсветки синтаксиса (1С язык)
-        st.code(control.algorithm, language=None)  # Streamlit не поддерживает 1С напрямую, но покажет как код
+    # Алгоритм (скрыто для будущего использования)
+    # if control.algorithm:
+    #     st.subheader("Алгоритм")
+    #     # Используем code блок для подсветки синтаксиса (1С язык)
+    #     st.code(control.algorithm, language=None)  # Streamlit не поддерживает 1С напрямую, но покажет как код
     
     # Кнопка печати (через браузер)
     st.divider()
