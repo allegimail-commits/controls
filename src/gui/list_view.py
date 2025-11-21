@@ -48,7 +48,7 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
         if st.button("Найти", use_container_width=True, key='find_button'):
             st.rerun()
     with col_btn:
-        if st.button("🔄 Сбросить настройки таблицы", use_container_width=True, key='reset_aggrid_filters'):
+        if st.button("Сбросить настройки", use_container_width=True, key='reset_aggrid_filters'):
             # Сбрасываем фильтры FilterState
             filter_state.reset_filters()
             # Удаляем ключ быстрого поиска из session_state (будет пересоздан с пустым значением)
