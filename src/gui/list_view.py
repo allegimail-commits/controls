@@ -4,7 +4,9 @@
 
 import streamlit as st
 import pandas as pd
+from io import BytesIO
 from typing import List, Optional
+from openpyxl.utils import get_column_letter
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 from ..models.control import Control
 from .filters import FilterState
@@ -72,7 +74,8 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
         </style>
     """, unsafe_allow_html=True)
     
-    col_search, col_find, col_btn = st.columns([8, 1, 1])
+    # Создаем интерфейс поиска и кнопок
+    col_search, col_find, col_btn, col_export = st.columns([7, 1, 1, 1])
     with col_search:
         search_term = st.text_input("", placeholder="Быстрый поиск по таблице", key="quick_search", label_visibility="collapsed")
     with col_find:
@@ -91,8 +94,10 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
             st.session_state.aggrid_reset_counter += 1
             st.rerun()
     
-    # Подготавливаем данные для таблицы
+    # Подготавливаем данные для таблицы и экспорта
     table_data = []
+    export_data = []
+    
     for idx, control in enumerate(controls):
         # Применяем быстрый поиск
         if search_term:
@@ -106,6 +111,7 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
         # Обрезаем URI для отображения
         uri_display = control.uri[:100] + "..." if len(control.uri) > 100 else control.uri
         
+        # Данные для таблицы (с обрезанным URI и символами для чекбоксов)
         table_data.append({
             'ID': idx,
             'Идентификатор': control.identifier or '',
@@ -118,12 +124,60 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
             'Таксономия': control.taxonomy or '',
             'Рынок': control.market or '',
         })
+        
+        # Данные для экспорта (с полными URI и исходными значениями)
+        export_data.append({
+            'ID': idx,
+            'Идентификатор': control.identifier or '',
+            'Наименование': control.name or '',
+            'URI': control.uri or '',
+            'Обязательный': control.required or '',
+            'ДоступноИсправление': control.correction_available or '',
+            'Утверждение': control.approval or '',
+            'КодТаблицы': control.table_code or '',
+            'Таксономия': control.taxonomy or '',
+            'Рынок': control.market or '',
+        })
+    
+    # Подготавливаем Excel файл для экспорта
+    excel_bytes = None
+    if export_data:
+        df_export = pd.DataFrame(export_data)
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df_export.to_excel(writer, index=False, sheet_name='Контроли')
+            # Настраиваем ширину колонок
+            worksheet = writer.sheets['Контроли']
+            for col_idx, col in enumerate(df_export.columns, 1):
+                max_length = max(
+                    df_export[col].astype(str).map(len).max(),
+                    len(col)
+                )
+                # Ограничиваем максимальную ширину колонки
+                adjusted_width = min(max_length + 2, 50)
+                # Получаем букву колонки (A, B, C, ..., Z, AA, AB, ...)
+                col_letter = get_column_letter(col_idx)
+                worksheet.column_dimensions[col_letter].width = adjusted_width
+        
+        excel_bytes = output.getvalue()
+    
+    # Добавляем кнопку экспорта в Excel
+    with col_export:
+        if excel_bytes:
+            st.download_button(
+                label="📥 Выгрузить в Excel",
+                data=excel_bytes,
+                file_name="контроли.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True,
+                key='export_excel_button'
+            )
     
     if not table_data:
         st.info("Нет результатов, соответствующих критериям поиска")
         return None
     
-    # Создаем DataFrame
+    # Создаем DataFrame для отображения
     df = pd.DataFrame(table_data)
     
     # Инициализируем счетчик для сброса таблицы
