@@ -35,12 +35,39 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
     # Добавляем CSS для выравнивания высоты кнопок с высотой строки поиска
     st.markdown("""
         <style>
+        /* Выравнивание всех элементов в строке поиска по верхнему краю */
         div[data-testid="column"] {
-            display: flex;
-            align-items: center;
+            vertical-align: top !important;
+        }
+        /* Выравнивание внутренних контейнеров колонок */
+        div[data-testid="column"] > div[style*="flex"] {
+            align-items: flex-start !important;
+        }
+        /* Фиксированная высота и выравнивание всех кнопок */
+        .stButton {
+            margin-top: 0 !important;
         }
         .stButton > button {
-            height: 38px;
+            height: 38px !important;
+            min-height: 38px !important;
+            max-height: 38px !important;
+            line-height: 1.1 !important;
+            white-space: normal !important;
+            padding: 0.25rem 0.5rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            vertical-align: top !important;
+            margin-top: 0 !important;
+        }
+        /* Выравнивание текстового поля */
+        .stTextInput {
+            margin-top: 0 !important;
+        }
+        .stTextInput > div > div > input {
+            height: 38px !important;
+            box-sizing: border-box !important;
+            margin-top: 0 !important;
         }
         </style>
     """, unsafe_allow_html=True)
