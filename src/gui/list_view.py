@@ -93,6 +93,9 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
                 st.session_state.aggrid_reset_counter = 0
             st.session_state.aggrid_reset_counter += 1
             st.rerun()
+    with col_export:
+        # Placeholder для кнопки экспорта (будет обновлен после подготовки данных)
+        export_button_placeholder = st.empty()
     
     # Подготавливаем данные для таблицы и экспорта
     table_data = []
@@ -161,11 +164,11 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
         
         excel_bytes = output.getvalue()
     
-    # Добавляем кнопку экспорта в Excel
-    with col_export:
-        if excel_bytes:
+    # Обновляем кнопку экспорта в Excel
+    if excel_bytes:
+        with export_button_placeholder.container():
             st.download_button(
-                label="📥 Выгрузить в Excel",
+                label="Выгрузить в Excel",
                 data=excel_bytes,
                 file_name="контроли.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
