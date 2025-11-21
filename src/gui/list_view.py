@@ -62,6 +62,34 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
             vertical-align: top !important;
             margin-top: 0 !important;
         }
+        /* Стили для кнопки загрузки (download_button) */
+        .stDownloadButton {
+            margin-top: 0 !important;
+        }
+        .stDownloadButton > button {
+            height: 38px !important;
+            min-height: 38px !important;
+            max-height: 38px !important;
+            line-height: 1.1 !important;
+            white-space: normal !important;
+            padding: 0.25rem 0.5rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            vertical-align: top !important;
+            margin-top: 0 !important;
+        }
+        /* Универсальные стили для всех кнопок в колонках */
+        div[data-testid="column"] .stButton > button,
+        div[data-testid="column"] .stDownloadButton > button,
+        div[data-testid="column"] button[data-testid="baseButton-secondary"],
+        div[data-testid="column"] button[data-testid="baseButton-primary"] {
+            height: 38px !important;
+            min-height: 38px !important;
+            max-height: 38px !important;
+            line-height: 1.1 !important;
+            padding: 0.25rem 0.5rem !important;
+        }
         /* Выравнивание текстового поля */
         .stTextInput {
             margin-top: 0 !important;
