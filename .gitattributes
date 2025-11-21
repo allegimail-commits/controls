@@ -1,0 +1,10 @@
+# Используем Git LFS для больших файлов
+Template.xml filter=lfs diff=lfs merge=lfs -text
+# Также для других потенциально больших файлов
+*.bin filter=lfs diff=lfs merge=lfs -text
+*.pickle filter=lfs diff=lfs merge=lfs -text
+# SQLite базы данных (если нужно хранить в репозитории)
+# ВАЖНО: Обычно chroma_db/ должна быть в .gitignore и не храниться в репозитории
+*.sqlite filter=lfs diff=lfs merge=lfs -text
+*.sqlite3 filter=lfs diff=lfs merge=lfs -text
+*.db filter=lfs diff=lfs merge=lfs -text
