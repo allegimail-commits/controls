@@ -31,10 +31,22 @@ def render_controls_list(all_controls: List[Control], filter_state: FilterState,
     # Применяем фильтры
     controls = filter_state.apply_filters(all_controls)
     
-    # Быстрый поиск и кнопка сброса фильтров в одной строке
-    col_search, col_btn = st.columns([10, 1])
+    # Быстрый поиск и кнопки в одной строке
+    # Добавляем CSS для выравнивания высоты кнопок с высотой строки поиска
+    st.markdown("""
+        <style>
+        .stButton > button {
+            height: 38px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    col_search, col_find, col_btn = st.columns([8, 1, 1])
     with col_search:
-        search_term = st.text_input("🔍 Быстрый поиск по таблице", key="quick_search")
+        search_term = st.text_input("", placeholder="Быстрый поиск по таблице", key="quick_search", label_visibility="collapsed")
+    with col_find:
+        if st.button("Найти", use_container_width=True, key='find_button'):
+            st.rerun()
     with col_btn:
         if st.button("🔄 Сбросить настройки таблицы", use_container_width=True, key='reset_aggrid_filters'):
             # Сбрасываем фильтры FilterState
